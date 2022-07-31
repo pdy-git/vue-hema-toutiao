@@ -77,7 +77,7 @@ export default {
         } = await login(this.mobile, this.code)
 
         // 跳转到profile
-        this.$router.push('/profile')
+        this.$router.push('/my')
 
         this.$toast.success('登录成功')
 

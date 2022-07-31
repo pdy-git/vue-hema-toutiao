@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   // JSON.parse(localStorage.getItem('HEIMA_TOUTIAO_TOUKEN'))
   state: {
-    tokenObj: getToken()
+    tokenObj: getToken() || {}
   },
   mutations: {
     SET_TOKEN(state, payload) {
