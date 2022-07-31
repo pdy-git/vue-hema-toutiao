@@ -2,7 +2,7 @@
   <div>
     <van-nav-bar title="登录" />
     <!-- 登录表单 -->
-    <van-form @submit="onSubmit" class="form" ref="form">
+    <van-form @submit="onSubmit" class="form" ref="loginForm">
       <van-field
         v-model="mobile"
         name="mobile"
@@ -37,7 +37,7 @@
           <van-count-down
             @finish="isShowCode = true"
             v-else
-            :time="5 * 1000"
+            :time="60 * 1000"
             format="ss 秒"
           />
         </template>
@@ -94,24 +94,52 @@ export default {
         this.$toast.fail(message)
       }
     },
-    sendCode() {
-      this.$refs.form.validate('mobile').then(async () => {
-        this.loading()
+    async sendCode() {
+      // 点击验证码，验证手机号
+      try {
+        await this.$refs.loginForm.validate('mobile')
+      } catch (error) {
+        return console.log('验证失败', error)
+      }
+      this.isShowCode = false
 
-        try {
-          await getCodeAPI(this.mobile)
-          this.$toast.success('获取验证码成功')
-          this.isShowCode = false
-        } catch (error) {
-          const status = error.response.status
-          let message = '手机号不正确'
-          if (status === 429) {
-            message = error.response.data.message
-          }
-          this.$toast.fail(message)
+      // 请求发送验证码
+      try {
+        await getCodeAPI(this.mobile)
+        this.$toast('发生成功')
+      } catch (err) {
+        if (err.response.status === 429) {
+          this.$toast('发送频繁')
         }
-      })
+        this.$toast('发送失败')
+      }
     }
+
+    // sendCode() {
+    //   try {
+    //     this.$refs.loginForm.validate('mobile')
+    //   } catch (error) {
+    //     return console.log('验证失败', error)
+    //   }
+
+    //   this.isShowCode = true
+    //   this.$refs.form.validate('mobile').then(async () => {
+    //     this.loading()
+
+    //     try {
+    //       await getCodeAPI(this.mobile)
+    //       this.$toast.success('获取验证码成功')
+    //       this.isShowCode = false
+    //     } catch (error) {
+    //       const status = error.response.status
+    //       let message = '手机号不正确'
+    //       if (status === 429) {
+    //         message = error.response.data.message
+    //       }
+    //       this.$toast.fail(message)
+    //     }
+    //   })
+    // }
   }
 }
 </script>
