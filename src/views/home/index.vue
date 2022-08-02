@@ -124,7 +124,9 @@ export default {
 
 .van-tab__pane {
   // 符号的两侧必须由空格
-  min-height: calc(100vh - 92px - 88px - 100px);
+  max-height: calc(100vh - 92px - 88px - 100px);
   background-color: aqua;
+  // padding-bottom: 100px;
+  overflow: auto;
 }
 </style>
