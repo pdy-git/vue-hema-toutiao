@@ -79,7 +79,7 @@ export default {
           this.isfinished = true
         }
         // 2.存储数据
-        this.articles.push(...data.data.results)
+        // this.articles.push(...data.data.results)
         if (this.refreshing) {
           this.articles.unshift(...data.data.results)
         } else {
