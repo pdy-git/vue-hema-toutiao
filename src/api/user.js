@@ -19,3 +19,20 @@ export const getCodeAPI = (mobile) => {
     url: `/v1_0/sms/codes/${mobile}`
   })
 }
+
+export const getUserInfo = () => {
+  return request({
+    url: '/v1_0/user/profile'
+  })
+}
+
+// 上传文件
+export const UploadAvator = (file) => {
+  const fm = new FormData()
+  fm.append('photo', file)
+  return request({
+    url: '/v1_0/user/photo',
+    method: 'PATCH',
+    data: fm
+  })
+}

@@ -16,6 +16,7 @@
 import { getSearchSuggetionsAPI } from '@/api/search'
 import { debounce } from 'lodash'
 export default {
+  name: 'suggestions',
   data() {
     return {
       suggestions: []
