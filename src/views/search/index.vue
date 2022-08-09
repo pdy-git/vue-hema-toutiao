@@ -14,7 +14,14 @@
       />
     </form>
     <!-- 搜索历史 -->
-    <component :is="componentName" :keywords="keyWords"></component>
+    <component
+      :is="componentName"
+      :keywords="keyWords"
+      @searchSuggestions="searchSuggestions"
+      :searchHistories="searchHistories"
+      @del="searchHistories = []"
+      @search="searchSuggestions"
+    ></component>
   </div>
 </template>
 
@@ -27,7 +34,8 @@ export default {
   data() {
     return {
       keyWords: '',
-      isShowSearchResult: false
+      isShowSearchResult: false,
+      searchHistories: JSON.parse(localStorage.getItem('HISTORY'))
     }
   },
   components: {
@@ -48,13 +56,29 @@ export default {
       return SearchSuggestion
     }
   },
+
   methods: {
     onSearch() {
+      // 渲染搜索结果
       this.isShowSearchResult = true
-      console.log('正在搜索')
+      // 去重 ， 最新的放在最前面
+      const index = this.searchHistories.indexOf(this.keyWords)
+      if (index !== -1) {
+        this.searchHistories.splice(index, 1)
+      }
+      this.searchHistories.unshift(this.keyWords)
+      // 历史存储
+      const value = JSON.stringify(this.searchHistories)
+      console.log(value)
+      localStorage.setItem('HISTORY', value)
     },
     onSearchFocus() {
       this.isShowSearchResult = false
+    },
+    searchSuggestions(val) {
+      // 更新文本框内容
+      this.keyWords = val
+      this.onSearch()
     }
   }
 }

@@ -36,3 +36,20 @@ export const UploadAvator = (file) => {
     data: fm
   })
 }
+
+// 编辑用户个人资料
+export const UpDataAvator = (data) => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/profile',
+    data
+  })
+}
+
+// 获取用户自己的信息
+export const getUserInfoResult = () => {
+  return request({
+    url: '/v1_0/user',
+    method: 'GET'
+  })
+}

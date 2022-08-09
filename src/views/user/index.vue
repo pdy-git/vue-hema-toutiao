@@ -24,6 +24,28 @@
         @change="selectPhoto"
       />
     </van-cell>
+    <!-- 昵称 -->
+    <van-cell
+      title="昵称"
+      :value="userInfo.name"
+      is-link
+      @click="isUpdateNameShow = true"
+    />
+    <!-- 性别 -->
+    <van-cell
+      title="性别"
+      :value="userInfo.gender === 0 ? '男' : '女'"
+      is-link
+      @click="isUpdateGenderShow = true"
+    />
+    <!-- 生日 -->
+    <van-cell
+      title="生日"
+      @click="isUpdateBirthdayShow = true"
+      :value="userInfo.birthday"
+      is-link
+    />
+
     <!-- 头像弹出层 -->
     <van-popup
       v-model="isShow"
@@ -31,32 +53,65 @@
       :style="{ height: '100%', width: '100%' }"
       class="avator-popup"
     >
-      <update-avator
+      <UpdateAvator
         :photo="photo"
         v-if="isShow"
         @update-avator="userInfo.photo = $event"
-      ></update-avator>
+      ></UpdateAvator>
     </van-popup>
-    <van-cell title="昵称" value="内容" is-link />
-    <van-cell title="性别" value="内容" is-link />
-    <van-cell title="生日" value="内容" is-link />
+
+    <!-- 昵称弹出层 -->
+    <van-popup
+      v-model="isUpdateNameShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <Nickname v-model="userInfo.name" v-if="isUpdateNameShow"></Nickname>
+    </van-popup>
+    <!-- 性别弹出层 -->
+    <van-popup v-model="isUpdateGenderShow" position="bottom">
+      <UpGender
+        v-model="userInfo.gender"
+        @close="isUpdateGenderShow = false"
+        v-if="isUpdateGenderShow"
+      ></UpGender>
+    </van-popup>
+    <!-- 生日弹出层 -->
+    <van-popup v-model="isUpdateBirthdayShow" position="bottom">
+      <UpBirthday
+        @close="isUpdateBirthdayShow = false"
+        v-model="userInfo.birthday"
+        v-if="isUpdateBirthdayShow"
+      ></UpBirthday>
+    </van-popup>
   </div>
+
   <!-- 脱离标准流 -->
 </template>
 
 <script>
 import { getUserInfo } from '@/api/user'
-import UpdateAvator from './components/update.vue'
 import { resolveToBase64 } from './components/index'
+
+import UpdateAvator from './components/update.vue'
+import Nickname from './components/nickname.vue'
+import UpGender from './components/UpGender.vue'
+import UpBirthday from './components/UpBirthday.vue'
 export default {
   name: 'my-user',
   components: {
-    UpdateAvator
+    UpdateAvator,
+    Nickname,
+    UpGender,
+    UpBirthday
   },
   data() {
     return {
       userInfo: [],
       isShow: false,
+      isUpdateNameShow: false,
+      isUpdateGenderShow: false,
+      isUpdateBirthdayShow: false,
       photo: ''
     }
   },
@@ -76,14 +131,6 @@ export default {
     async selectPhoto(e) {
       // console.log(e)
       const file = e.target.files[0]
-
-      // const url = window.URL.createObjectURL(file)
-      // this.photo = url
-      // // console.dir(url)
-      // this.isShow = true
-
-      // e.target.value = ''
-
       const url = await resolveToBase64(file)
       this.photo = url
       e.target.value = ''

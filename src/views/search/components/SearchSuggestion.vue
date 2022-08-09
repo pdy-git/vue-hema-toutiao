@@ -4,6 +4,7 @@
       v-for="(item, index) in highlightSuggestions"
       :key="index"
       icon="search"
+      @click="searchSuggestions(index)"
     >
       <template #title>
         <span v-html="item"></span>
@@ -29,31 +30,21 @@ export default {
     }
   },
   methods: {
-    //   getSearchSuggetion() {
-    //     clearTimeout(this.id)
-    //     this.id = setTimeout(async () => {
-    //       try {
-    //         const { data } = await getSearchSuggetionsAPI(this.keywords)
-    //         this.suggestions = data.data.options
-    //         console.log(data)
-    //       } catch (error) {
-    //         this.$toast.fail('获取建议失败')
-    //       }
-    //     }, 1000)
-    //   }
-    // },
     getSearchSuggetion: debounce(async function () {
       try {
         const { data } = await getSearchSuggetionsAPI(this.keywords)
         this.suggestions = data.data.options.filter(Boolean)
-        console.log(data)
+        // console.log(data)
       } catch (error) {
         this.$toast.fail('获取建议失败')
       }
-    }, 1000)
+    }, 300),
+    searchSuggestions(index) {
+      this.$emit('searchSuggestions', this.suggestions[index])
+    }
   },
   watch: {
-    keywords: {
+    keyWords: {
       immediate: true,
       handler() {
         this.getSearchSuggetion()
